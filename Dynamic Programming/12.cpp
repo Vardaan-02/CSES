@@ -16,24 +16,34 @@ using namespace std;
 const int M = 1000000007;
 const int N = 1e6+10;
 
-vector<int> danda(N,0);
-vector<int> nodanda(N,0);
-
-void precalc(){
-    danda[1] = 1;
-    nodanda[1] = 1;
-    for(int i=2 ; i<N-5 ; i++){
-        danda[i] = (danda[i-1]*4) + nodanda[i-1];
-        danda[i] %= M;
-        nodanda[i] = danda[i-1] + nodanda[i-1]*2;
-        nodanda[i] %= M;
-    }
-}
+void precalc(){}
 
 void solve(){
     int n;
     cin >> n;
-    cout << (danda[n]+nodanda[n])%M << endl;
+    vector<int> v(n);
+    vin(v);
+
+    int sum = accumulate(v.begin(),v.end(),0);
+
+    vector<vector<int>> dp(110,vector<int>(sum+1,0));
+
+    dp[0][0] = 1;
+
+    for(int i=0 ; i<110 ; i++) dp[i][0] = 1;
+
+    for(int i=1 ; i<=v.size() ; i++){
+        for(int j=sum ; j>=0 ; j--){
+            if(dp[i-1][j]) dp[i][j] = 1;
+            if(j-v[i-1]>=0 && dp[i-1][j-v[i-1]]) dp[i][j] = 1;
+        }
+    }
+
+    vector<int> ans;
+    for(int i=1 ; i<=sum ; i++) if(dp[n][i]) ans.push_back(i);
+
+    cout << ans.size() << endl;
+    vout(ans);
 }
  
 int32_t main(){
@@ -41,10 +51,10 @@ int32_t main(){
     cin.tie(0);
     cout.tie(0);
     precalc();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }

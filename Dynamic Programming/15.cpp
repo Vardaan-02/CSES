@@ -16,24 +16,24 @@ using namespace std;
 const int M = 1000000007;
 const int N = 1e6+10;
 
-vector<int> danda(N,0);
-vector<int> nodanda(N,0);
-
-void precalc(){
-    danda[1] = 1;
-    nodanda[1] = 1;
-    for(int i=2 ; i<N-5 ; i++){
-        danda[i] = (danda[i-1]*4) + nodanda[i-1];
-        danda[i] %= M;
-        nodanda[i] = danda[i-1] + nodanda[i-1]*2;
-        nodanda[i] %= M;
-    }
-}
+void precalc(){}
 
 void solve(){
     int n;
     cin >> n;
-    cout << (danda[n]+nodanda[n])%M << endl;
+    vector<int> v(n);
+    vin(v);
+    vector<int> ans;
+    ans.push_back(v[0]);
+    for(int i=1 ; i<n ; i++){
+        if(v[i]>ans[ans.size()-1]) ans.push_back(v[i]);
+        else{
+            int index = lower_bound(ans.begin(),ans.end(),v[i]) - ans.begin();
+            ans[index] = v[i];
+        }
+    }
+
+    cout << ans.size();
 }
  
 int32_t main(){
@@ -41,10 +41,10 @@ int32_t main(){
     cin.tie(0);
     cout.tie(0);
     precalc();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }
